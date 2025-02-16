@@ -1,4 +1,3 @@
-
 import { Shield, ArrowRight, CheckCircle2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -36,6 +35,21 @@ const testimonials = [
   },
 ];
 
+const partners = [
+  {
+    name: "Blockchain Labs",
+    logo: "data:image/svg+xml,%3Csvg width='200' height='50' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='200' height='50' fill='%232D3648' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='16' fill='white' text-anchor='middle' dy='.3em'%3EBlockchain Labs%3C/text%3E%3C/svg%3E",
+  },
+  {
+    name: "CryptoSecure",
+    logo: "data:image/svg+xml,%3Csvg width='200' height='50' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='200' height='50' fill='%232D3648' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='16' fill='white' text-anchor='middle' dy='.3em'%3ECryptoSecure%3C/text%3E%3C/svg%3E",
+  },
+  {
+    name: "DeFi Protocol",
+    logo: "data:image/svg+xml,%3Csvg width='200' height='50' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='200' height='50' fill='%232D3648' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='16' fill='white' text-anchor='middle' dy='.3em'%3EDeFi Protocol%3C/text%3E%3C/svg%3E",
+  },
+];
+
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -50,13 +64,36 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 pt-20 pb-16">
+      <section className="relative container mx-auto px-4 pt-20 pb-16 overflow-hidden">
+        <motion.div
+          className="absolute inset-0 -z-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/10" />
+          <motion.div
+            className="absolute inset-0"
+            animate={{
+              backgroundPosition: ["0% 0%", "100% 100%"],
+              backgroundSize: ["100% 100%", "150% 150%"],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            style={{
+              background: "radial-gradient(circle at center, #E5E9F0 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center"
+          className="text-center relative"
         >
           <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6">
             Secure Your Crypto Assets
@@ -76,7 +113,6 @@ const Index = () => {
         </motion.div>
       </section>
 
-      {/* Features Section */}
       <section className="bg-muted py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-primary text-center mb-12">
@@ -102,7 +138,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-primary text-center mb-12">
@@ -130,7 +165,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-semibold text-primary text-center mb-12">
+            Trusted by Industry Leaders
+          </h2>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            {partners.map((partner, index) => (
+              <motion.div
+                key={partner.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="w-40 h-20 relative group"
+              >
+                <motion.img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="w-full h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-primary py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">
