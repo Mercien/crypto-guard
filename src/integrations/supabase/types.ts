@@ -9,6 +9,79 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_logs: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          id: string
+          log_type: string
+          message: string
+          scan_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          log_type: string
+          message: string
+          scan_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          log_type?: string
+          message?: string
+          scan_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_logs_scan_id_fkey"
+            columns: ["scan_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_scans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      security_issues: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          issue_type: string
+          recommendation: string
+          scan_id: string | null
+          severity: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          issue_type: string
+          recommendation: string
+          scan_id?: string | null
+          severity: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          issue_type?: string
+          recommendation?: string
+          scan_id?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_issues_scan_id_fkey"
+            columns: ["scan_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_scans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Table: {
         Row: {
           created_at: string
@@ -24,6 +97,39 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_scans: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          issue_id: string | null
+          scan_results: Json | null
+          security_score: number | null
+          status: Database["public"]["Enums"]["scan_status"] | null
+          wallet_address: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          issue_id?: string | null
+          scan_results?: Json | null
+          security_score?: number | null
+          status?: Database["public"]["Enums"]["scan_status"] | null
+          wallet_address: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          issue_id?: string | null
+          scan_results?: Json | null
+          security_score?: number | null
+          status?: Database["public"]["Enums"]["scan_status"] | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -32,7 +138,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      scan_status: "pending" | "completed" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
