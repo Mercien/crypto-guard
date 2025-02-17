@@ -6,33 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck, AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
-interface SecurityIssue {
-  id: string;
-  description: string;
-  severity: string;
-}
-
-interface ScanResults {
-  ai_suggestions?: string;
-  [key: string]: any;
-}
-
-interface WalletScan {
-  id: string;
-  wallet_address: string;
-  security_score: number | null;
-  created_at: string;
-  status: "pending" | "completed" | "failed";
+type SecurityIssue = Database["public"]["Tables"]["security_issues"]["Row"];
+type WalletScan = Database["public"]["Tables"]["wallet_scans"]["Row"] & {
   security_issues: SecurityIssue[];
-  scan_results: ScanResults | null;
-}
+};
 
 const Dashboard = () => {
   const { toast } = useToast();
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
 
-  const { data: scans, isLoading } = useQuery<WalletScan[]>({
+  const { data: scans, isLoading } = useQuery({
     queryKey: ["wallet-scans"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -44,7 +29,7 @@ const Dashboard = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as WalletScan[];
     },
   });
 
@@ -102,7 +87,7 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">
-                    {new Date(scan.created_at).toLocaleDateString()}
+                    {new Date(scan.created_at || '').toLocaleDateString()}
                   </span>
                   <span className="flex items-center gap-2">
                     {scan.security_score >= 70 ? (
