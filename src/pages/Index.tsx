@@ -1,3 +1,4 @@
+
 import { Shield, ArrowRight, CheckCircle2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -55,7 +56,7 @@ const Index = () => {
   const { toast } = useToast();
 
   const handleGetStarted = () => {
-    navigate("/scan");
+    navigate("/dashboard");
     toast({
       title: "Welcome!",
       description: "Let's secure your crypto wallet.",
