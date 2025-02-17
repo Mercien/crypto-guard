@@ -7,11 +7,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck, AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
+interface SecurityIssue {
+  id: string;
+  description: string;
+  severity: string;
+}
+
+interface ScanResults {
+  ai_suggestions?: string;
+  [key: string]: any;
+}
+
+interface WalletScan {
+  id: string;
+  wallet_address: string;
+  security_score: number | null;
+  created_at: string;
+  status: "pending" | "completed" | "failed";
+  security_issues: SecurityIssue[];
+  scan_results: ScanResults | null;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
 
-  const { data: scans, isLoading } = useQuery({
+  const { data: scans, isLoading } = useQuery<WalletScan[]>({
     queryKey: ["wallet-scans"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -92,7 +113,7 @@ const Dashboard = () => {
                   </span>
                 </div>
 
-                {scan.security_issues && (
+                {scan.security_issues && scan.security_issues.length > 0 && (
                   <div className="mt-4">
                     <h3 className="font-semibold mb-2">Security Issues</h3>
                     <ul className="space-y-2">
