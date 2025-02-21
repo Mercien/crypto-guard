@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Wallet, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAddress, useConnect, useDisconnect, ConnectorNotFoundError, useConnectionStatus } from "@thirdweb-dev/react";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -15,6 +16,52 @@ const Dashboard = () => {
   const [seedPhrase, setSeedPhrase] = useState("");
   const [privateKey, setPrivateKey] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // ThirdWeb hooks
+  const address = useAddress();
+  const connect = useConnect();
+  const disconnect = useDisconnect();
+  const connectionStatus = useConnectionStatus();
+
+  const handleConnect = async () => {
+    try {
+      await connect();
+      toast({
+        title: "Success",
+        description: "Wallet connected successfully!",
+      });
+    } catch (error) {
+      if (error instanceof ConnectorNotFoundError) {
+        toast({
+          title: "Error",
+          description: "Please install a Web3 wallet like MetaMask",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to connect wallet",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      toast({
+        title: "Success",
+        description: "Wallet disconnected successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to disconnect wallet",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleManualConnect = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +117,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="manual" className="w-full">
+        <Tabs defaultValue="automatic" className="w-full">
           <TabsList className="grid grid-cols-2">
             <TabsTrigger value="automatic">
               <Wallet className="w-4 h-4 mr-2" />
@@ -87,13 +134,35 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle>Connect with Web3 Wallet</CardTitle>
                 <CardDescription>
-                  Securely connect using your Web3 wallet (Coming soon)
+                  {address ? 
+                    `Connected: ${address.slice(0, 6)}...${address.slice(-4)}` : 
+                    "Connect your Web3 wallet to begin"
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button disabled className="w-full">
-                  Connect Wallet (Coming Soon)
-                </Button>
+                {connectionStatus === "connected" ? (
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Your wallet is connected and ready for security assessment
+                    </p>
+                    <Button 
+                      variant="destructive" 
+                      className="w-full"
+                      onClick={handleDisconnect}
+                    >
+                      Disconnect Wallet
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    className="w-full"
+                    onClick={handleConnect}
+                    disabled={connectionStatus === "connecting"}
+                  >
+                    {connectionStatus === "connecting" ? "Connecting..." : "Connect Wallet"}
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
