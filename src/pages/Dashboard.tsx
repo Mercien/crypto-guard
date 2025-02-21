@@ -9,8 +9,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { Database } from "@/integrations/supabase/types";
 
 type SecurityIssue = Database["public"]["Tables"]["security_issues"]["Row"];
+
+interface ScanResults {
+  ai_suggestions?: string;
+  [key: string]: any;
+}
+
 type WalletScan = Database["public"]["Tables"]["wallet_scans"]["Row"] & {
   security_issues: SecurityIssue[];
+  scan_results: ScanResults | null;
 };
 
 const Dashboard = () => {
