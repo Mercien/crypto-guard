@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Wallet, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAddress, useConnect, useDisconnect, ConnectorNotFoundError, useConnectionStatus } from "@thirdweb-dev/react";
+import { useAddress, useConnect, useDisconnect, useConnectionStatus, ConnectWallet } from "@thirdweb-dev/react";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -25,25 +25,19 @@ const Dashboard = () => {
 
   const handleConnect = async () => {
     try {
-      await connect();
+      await connect({
+        chainId: 1 // Ethereum Mainnet
+      });
       toast({
         title: "Success",
         description: "Wallet connected successfully!",
       });
     } catch (error) {
-      if (error instanceof ConnectorNotFoundError) {
-        toast({
-          title: "Error",
-          description: "Please install a Web3 wallet like MetaMask",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to connect wallet",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: "Please install a Web3 wallet like MetaMask",
+        variant: "destructive",
+      });
     }
   };
 
