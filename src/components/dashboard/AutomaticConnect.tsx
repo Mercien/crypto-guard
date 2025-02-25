@@ -2,7 +2,7 @@
 import { useAddress, useConnect, useDisconnect, useConnectionStatus } from "@thirdweb-dev/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export const AutomaticConnect = () => {
   const { toast } = useToast();
@@ -13,7 +13,10 @@ export const AutomaticConnect = () => {
 
   const handleConnect = async () => {
     try {
-      await connect();
+      await connect({
+        connector: "injected",
+        chainId: 1, // Ethereum Mainnet
+      });
       toast({
         title: "Success",
         description: "Wallet connected successfully!",
