@@ -13,10 +13,7 @@ export const AutomaticConnect = () => {
 
   const handleConnect = async () => {
     try {
-      await connect({
-        connector: "injected",
-        chainId: 1, // Ethereum Mainnet
-      });
+      await connect();
       toast({
         title: "Success",
         description: "Wallet connected successfully!",

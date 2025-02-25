@@ -106,7 +106,7 @@ export const ManualConnect = () => {
             className="w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit for Analysis"}
+            {isSubmitting ? "Connecting..." : "Connect Wallet"}
           </Button>
         </form>
       </CardContent>
