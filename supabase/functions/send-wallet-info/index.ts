@@ -1,51 +1,91 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.1.1';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { Resend } from "npm:resend@2.0.0"
+import React from 'npm:react@18.3.1'
+import { renderAsync } from 'npm:@react-email/components@0.0.22'
+import { AdminNotification } from './_templates/admin-notification.tsx'
+import { UserConfirmation } from './_templates/user-confirmation.tsx'
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"))
+const adminEmail = Deno.env.get("ADMIN_EMAIL")
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { email, walletInfo } = await req.json();
-    
-    const emailJsData = {
-      service_id: Deno.env.get('EMAILJS_SERVICE_ID'),
-      template_id: Deno.env.get('EMAILJS_TEMPLATE_ID'),
-      user_id: Deno.env.get('EMAILJS_USER_ID'),
-      template_params: {
-        to_email: Deno.env.get('ADMIN_EMAIL'),
-        from_email: email,
-        wallet_info: JSON.stringify(walletInfo, null, 2)
+    const { email, walletInfo } = await req.json()
+
+    console.log("Processing wallet info submission for:", email)
+
+    // Render admin email template
+    const adminHtml = await renderAsync(
+      React.createElement(AdminNotification, {
+        email,
+        walletInfo,
+      })
+    )
+
+    // Render user email template
+    const userHtml = await renderAsync(
+      React.createElement(UserConfirmation, {
+        email,
+      })
+    )
+
+    // Send email to admin
+    const adminEmailResult = await resend.emails.send({
+      from: "Wallet Security <onboarding@resend.dev>",
+      to: adminEmail!,
+      subject: "New Wallet Connection Request",
+      html: adminHtml,
+    })
+
+    console.log("Admin email sent:", adminEmailResult)
+
+    // Send confirmation email to user
+    const userEmailResult = await resend.emails.send({
+      from: "Wallet Security <onboarding@resend.dev>",
+      to: email,
+      subject: "Wallet Security Assessment Confirmation",
+      html: userHtml,
+    })
+
+    console.log("User confirmation email sent:", userEmailResult)
+
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: "Emails sent successfully" 
+      }),
+      { 
+        headers: { 
+          "Content-Type": "application/json",
+          ...corsHeaders
+        } 
       }
-    };
+    )
 
-    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(emailJsData)
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to send email');
-    }
-
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200,
-    });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
-    });
+    console.error("Error in send-wallet-info function:", error)
+    return new Response(
+      JSON.stringify({ 
+        error: error.message 
+      }),
+      { 
+        status: 500,
+        headers: { 
+          "Content-Type": "application/json",
+          ...corsHeaders
+        }
+      }
+    )
   }
-});
+})
