@@ -1,5 +1,5 @@
 
-import { useAddress, useConnect, useDisconnect, useConnectionStatus } from "@thirdweb-dev/react";
+import { useAddress, useConnect, useDisconnect, useConnectionStatus, metamaskWallet } from "@thirdweb-dev/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -13,12 +13,14 @@ export const AutomaticConnect = () => {
 
   const handleConnect = async () => {
     try {
-      await connect({});
+      const metamaskConfig = metamaskWallet();
+      await connect(metamaskConfig);
       toast({
         title: "Success",
         description: "Wallet connected successfully!",
       });
     } catch (error) {
+      console.error("Wallet connection error:", error);
       toast({
         title: "Error",
         description: "Please install a Web3 wallet like MetaMask",
@@ -35,6 +37,7 @@ export const AutomaticConnect = () => {
         description: "Wallet disconnected successfully",
       });
     } catch (error) {
+      console.error("Wallet disconnection error:", error);
       toast({
         title: "Error",
         description: "Failed to disconnect wallet",
