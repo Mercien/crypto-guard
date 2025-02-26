@@ -13,7 +13,7 @@ export const AutomaticConnect = () => {
 
   const handleConnect = async () => {
     try {
-      await connect();
+      await connect({});
       toast({
         title: "Success",
         description: "Wallet connected successfully!",
@@ -81,3 +81,4 @@ export const AutomaticConnect = () => {
     </Card>
   );
 };
+
