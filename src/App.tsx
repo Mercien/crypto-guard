@@ -8,6 +8,7 @@ import { ThirdwebProvider, ChainId } from "@thirdweb-dev/react";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import Report from "./pages/Report";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/report" element={<Report />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
