@@ -4,19 +4,19 @@ import { motion } from "framer-motion";
 const partners = [
   {
     name: "Coinbase",
-    logo: "https://images.unsplash.com/photo-1622012075988-5417f78568ce?auto=format&fit=crop&w=200&h=200",
+    logo: "https://cryptologos.cc/logos/coinbase-coin-logo.png",
   },
   {
     name: "Metamask",
-    logo: "https://images.unsplash.com/photo-1640832884929-54e7796c8c48?auto=format&fit=crop&w=200&h=200",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",
   },
   {
     name: "Binance",
-    logo: "https://images.unsplash.com/photo-1671431678431-c6dd24b6daa6?auto=format&fit=crop&w=200&h=200",
+    logo: "https://cryptologos.cc/logos/binance-usd-busd-logo.png",
   },
   {
     name: "Blockchain.com",
-    logo: "https://images.unsplash.com/photo-1609564484737-576bb6699caf?auto=format&fit=crop&w=200&h=200",
+    logo: "https://cryptologos.cc/logos/oasis-network-rose-logo.png",
   },
 ];
 
@@ -25,7 +25,7 @@ export const Partners = () => {
     <section className="py-16 bg-accent/20" id="partners">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-primary text-center mb-4">
-          Trusted Partners
+          Trusted <span className="text-blue-600">Partners</span>
         </h2>
         <p className="text-center text-secondary mb-12 max-w-3xl mx-auto">
           Working with industry leaders to provide the best security solutions

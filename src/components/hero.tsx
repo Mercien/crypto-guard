@@ -62,6 +62,14 @@ export const Hero = () => {
           transition={{ duration: 0.5 }}
           className="relative z-10"
         >
+          <motion.span 
+            className="inline-block px-3 py-1 bg-blue-600/10 text-blue-600 font-semibold rounded-full text-sm mb-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            AI-Powered Protection
+          </motion.span>
           <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">
             Secure Your Crypto <span className="text-blue-600">Assets</span> With AI
           </h1>
@@ -95,7 +103,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
-                className="flex flex-col items-center bg-white rounded-lg p-4 shadow-sm border border-accent/30"
+                className="flex flex-col items-center bg-white rounded-lg p-4 shadow-sm border border-accent/30 hover:border-blue-600/30 hover:shadow-md transition-all duration-300"
               >
                 <stat.icon className="h-8 w-8 text-blue-600 mb-2" />
                 <span className="text-2xl font-bold text-primary">{stat.value}</span>

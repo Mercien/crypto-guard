@@ -33,7 +33,7 @@ export const SupportedChains = () => {
     <section className="py-20 bg-white" id="chains">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-primary text-center mb-4">
-          Supported Blockchains
+          Supported <span className="text-blue-600">Blockchains</span>
         </h2>
         <p className="text-center text-secondary mb-12 max-w-3xl mx-auto">
           Our security tools work across multiple chains to provide comprehensive protection
@@ -50,11 +50,11 @@ export const SupportedChains = () => {
               className="flex flex-col items-center p-4 rounded-lg hover:bg-accent/10 transition-colors"
             >
               {chain.logo ? (
-                <img src={chain.logo} alt={chain.name} className="w-16 h-16 mb-3 object-contain" />
+                <img src={chain.logo} alt={chain.name} className="w-12 h-12 mb-3 object-contain" />
               ) : (
-                <div className="w-16 h-16 mb-3 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-2xl">+</div>
+                <div className="w-12 h-12 mb-3 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xl">+</div>
               )}
-              <h3 className="text-primary font-medium text-center">{chain.name}</h3>
+              <h3 className="text-primary font-medium text-center text-sm">{chain.name}</h3>
             </motion.div>
           ))}
         </div>
