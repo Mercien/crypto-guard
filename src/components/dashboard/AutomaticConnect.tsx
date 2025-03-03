@@ -2,8 +2,10 @@
 import { useAddress, useConnect, useDisconnect, useConnectionStatus, metamaskWallet } from "@thirdweb-dev/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { AlertCircle, ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 export const AutomaticConnect = () => {
   const { toast } = useToast();
@@ -12,9 +14,11 @@ export const AutomaticConnect = () => {
   const connect = useConnect();
   const disconnect = useDisconnect();
   const connectionStatus = useConnectionStatus();
+  const [hasFailedConnection, setHasFailedConnection] = useState(false);
 
   const handleConnect = async () => {
     try {
+      setHasFailedConnection(false);
       const metamaskConfig = metamaskWallet();
       await connect(metamaskConfig);
       toast({
@@ -25,9 +29,10 @@ export const AutomaticConnect = () => {
       navigate("/report");
     } catch (error) {
       console.error("Wallet connection error:", error);
+      setHasFailedConnection(true);
       toast({
-        title: "Error",
-        description: "Please install a Web3 wallet like MetaMask",
+        title: "Connection Error",
+        description: "Node connection was not successfully established",
         variant: "destructive",
       });
     }
@@ -36,6 +41,7 @@ export const AutomaticConnect = () => {
   const handleDisconnect = async () => {
     try {
       await disconnect();
+      setHasFailedConnection(false);
       toast({
         title: "Success",
         description: "Wallet disconnected successfully",
@@ -47,6 +53,16 @@ export const AutomaticConnect = () => {
         description: "Failed to disconnect wallet",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleSwitchToManual = () => {
+    const tabsElement = document.querySelector('[role="tablist"]');
+    if (tabsElement) {
+      const manualTabButton = tabsElement.querySelectorAll('button')[1];
+      if (manualTabButton) {
+        manualTabButton.click();
+      }
     }
   };
 
@@ -85,6 +101,26 @@ export const AutomaticConnect = () => {
           </Button>
         )}
       </CardContent>
+      
+      {hasFailedConnection && (
+        <CardFooter className="border-t pt-4 flex flex-col">
+          <div className="flex items-start space-x-2 mb-3 p-3 bg-amber-50 rounded-md text-amber-800 w-full">
+            <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium">Node connection was not successfully established</p>
+              <p className="mt-1">Please try the manual connection method instead.</p>
+            </div>
+          </div>
+          <Button 
+            variant="outline" 
+            className="w-full flex items-center justify-center text-blue-600"
+            onClick={handleSwitchToManual}
+          >
+            Switch to Manual Connection
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };
