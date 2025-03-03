@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Lock, CheckCircle2, Scan, AlertCircle } from "lucide-react";
+import { Shield, Lock, CheckCircle2, Scan, AlertCircle, FileCheck, Key } from "lucide-react";
 import { StartScanDialog } from "./start-scan-dialog";
 
 const securityStats = [
@@ -112,11 +112,46 @@ export const Hero = () => {
           className="relative z-10 hidden md:block"
         >
           <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=600&h=450" 
-              alt="Secure Crypto Analysis" 
-              className="rounded-lg shadow-xl"
-            />
+            <div className="relative bg-gradient-to-br from-blue-100 to-purple-100 p-6 rounded-lg shadow-xl overflow-hidden">
+              <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+              
+              <div className="relative z-10 flex flex-col space-y-6">
+                <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
+                  <div className="flex items-center">
+                    <Shield className="h-8 w-8 text-blue-600 mr-3" />
+                    <div>
+                      <h3 className="font-semibold text-primary">Wallet Protection</h3>
+                      <p className="text-xs text-secondary">Active monitoring</p>
+                    </div>
+                  </div>
+                  <CheckCircle2 className="h-6 w-6 text-green-500" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded-lg shadow-md flex flex-col">
+                    <Key className="h-6 w-6 text-blue-600 mb-2 self-center" />
+                    <h4 className="text-sm font-medium text-center">Private Keys</h4>
+                    <span className="text-xs text-green-500 text-center mt-1">Secured</span>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg shadow-md flex flex-col">
+                    <FileCheck className="h-6 w-6 text-blue-600 mb-2 self-center" />
+                    <h4 className="text-sm font-medium text-center">Smart Contracts</h4>
+                    <span className="text-xs text-green-500 text-center mt-1">Verified</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white p-3 rounded-lg shadow-md">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-medium text-primary">Security Score</span>
+                    <span className="text-xs font-bold text-blue-600">92/100</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: "92%" }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <motion.div
               initial={{ x: -20, opacity: 0 }}
