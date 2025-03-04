@@ -1,9 +1,10 @@
+
 import { motion } from "framer-motion";
 
 const partners = [
   {
     name: "Coinbase",
-    logo: "https://assets.coinbase.com/assets/cornerstoneLogos/coinbase.f6c7b5c1affdb76417a.svg",
+    logo: "https://altcoinsbox.com/wp-content/uploads/2022/12/coinbase-logo.svg",
   },
   {
     name: "Metamask",
