@@ -1,10 +1,9 @@
-
 import { motion } from "framer-motion";
 
 const partners = [
   {
     name: "Coinbase",
-    logo: "https://cryptologos.cc/logos/coinbase-coin-logo.png",
+    logo: "https://assets.coinbase.com/assets/cornerstoneLogos/coinbase.f6c7b5c1affdb76417a.svg",
   },
   {
     name: "Metamask",

