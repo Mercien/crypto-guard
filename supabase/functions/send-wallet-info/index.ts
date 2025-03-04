@@ -42,7 +42,7 @@ serve(async (req) => {
 
     // Send email to admin
     const adminEmailResult = await resend.emails.send({
-      from: "Wallet Security <no-reply@yourdomain.com>",
+      from: "Wallet Security <send@updates.getcryptoguard.com>",
       to: adminEmail,
       subject: "New Wallet Connection Request",
       html: adminHtml,
@@ -52,7 +52,7 @@ serve(async (req) => {
 
     // Send confirmation email to user
     const userEmailResult = await resend.emails.send({
-      from: "Wallet Security <no-reply@yourdomain.com>",
+      from: "Wallet Security <send@updates.getcryptoguard.com>",
       to: email,
       subject: "Wallet Security Assessment Confirmation",
       html: userHtml,
