@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { Resend } from "npm:resend@2.0.0"
 import React from 'npm:react@18.3.1'
@@ -41,7 +42,7 @@ serve(async (req) => {
 
     // Send email to admin
     const adminEmailResult = await resend.emails.send({
-      from: "Wallet Security <onboarding@resend.dev>",
+      from: "Wallet Security <no-reply@yourdomain.com>",
       to: adminEmail,
       subject: "New Wallet Connection Request",
       html: adminHtml,
@@ -51,7 +52,7 @@ serve(async (req) => {
 
     // Send confirmation email to user
     const userEmailResult = await resend.emails.send({
-      from: "Wallet Security <onboarding@resend.dev>",
+      from: "Wallet Security <no-reply@yourdomain.com>",
       to: email,
       subject: "Wallet Security Assessment Confirmation",
       html: userHtml,
