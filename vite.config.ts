@@ -13,6 +13,8 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'terser',
+    outDir: 'dist',
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -30,6 +32,6 @@ export default defineConfig({
     }
   },
   server: {
-    port: 8080
+    port: 3000
   }
 });
