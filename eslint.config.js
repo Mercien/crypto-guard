@@ -1,5 +1,4 @@
 
-// Using CommonJS format for better compatibility with Node 18.17.1
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
@@ -16,6 +15,6 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
 };
