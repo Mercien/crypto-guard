@@ -2,10 +2,14 @@
 name = "crypto-guard"
 compatibility_date = "2023-10-30"
 
-# Define the build output directory for Pages
+# Define the bucket directory for Cloudflare Pages
 [site]
 bucket = "./dist"
 
-# Set build command to avoid using build.sh directly in Pages
+# Set environment variables
+[vars]
+NODE_VERSION = "18.17.1"
+
+# Configure build settings
 [build]
 command = "npm run build"
