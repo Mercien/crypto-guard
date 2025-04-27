@@ -13,3 +13,10 @@ NODE_VERSION = "18.17.1"
 # Configure build settings
 [build]
 command = "npm run build"
+
+# Add routes configuration for SPA
+[routes]
+pattern = "/*"
+script = ""
+handler = "static"
+fallback_page = "/index.html"

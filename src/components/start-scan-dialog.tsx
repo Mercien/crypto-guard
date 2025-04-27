@@ -54,7 +54,7 @@ export const StartScanDialog = ({ variant = "primary", className }: StartScanDia
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button
           size="lg"
           className={`${buttonStyle} transition-all duration-300 ${className}`}
